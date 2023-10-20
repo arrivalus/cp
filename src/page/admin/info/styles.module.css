@@ -1,0 +1,29 @@
+.item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 20px 15px;
+    width: 100%;
+}
+
+.content {
+    width: 100%;
+    border: 1px solid rgb(244, 245, 246);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /*grid-column-gap: 20px;*/
+}
+
+.item_o {
+    /*background: rgba(173, 216, 230, 0.2);*/
+    background: rgb(244, 245, 246);
+}
+
+.item_e {
+    /*background: rgba(173, 216, 230, 0.2);*/
+}
+
+.wrapper{
+    display: grid;
+    grid-row-gap: 20px;
+    width: 100%;
+}

@@ -1,0 +1,25 @@
+.auth {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.content {
+    background: #fff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, .15);
+    padding: 30px;
+    max-width: 470px;
+    width: 100%;
+    border-radius: 15px;
+}
+
+.form {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-row-gap: 30px;
+    margin-top: 40px;
+    width: 100%;
+
+}
