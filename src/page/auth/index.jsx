@@ -31,6 +31,7 @@ const Auth = () => {
             } else if (values.password.length < 4) {
                 errors.password = 'Минимальная длина пароля - 4 смвола'
             }
+
             return errors
         },
         onSubmit: async (values) => {
