@@ -46,7 +46,7 @@ const Auth = () => {
                     const decoded = parseJwt(res.data.access_token);
                     const key = Object.keys(decoded).find((elem) => elem.includes("role"));
                     const role = decoded[key]
-                    console.log(role)
+
                     if (role === 'Manager') {
                         dispatch(setAuth({
                             token: res.data.access_token,

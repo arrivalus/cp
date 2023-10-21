@@ -7,22 +7,27 @@ import Info from "./info";
 import History from "./history";
 import {useGetUserMutation} from "../../store/manager.service";
 import {toast} from "react-toastify";
+import {useDispatch, useSelector} from "react-redux";
+import {selectUser, setUser} from "../../store/slice/userSlice";
 
 const Admin = () => {
+    const dispatch = useDispatch()
+    const {user} = useSelector(selectUser)
+
+    const [getUser, {isLoading: isLoadingUser}] = useGetUserMutation()
+
     const [value, setValue] = useState('')
     const [tab, setTab] = useState(0)
-    const [getUser, {isLoading: isLoadingUser, data}] = useGetUserMutation()
-    const [userData, setUserData] = useState({})
     const [startSerach, setStartSearch] = useState(false)
     const handleFindUser = () => {
         setStartSearch(true)
         getUser({login: value}).unwrap().then((res) => {
-            setUserData(res.items?.find(f => f.login === value || f.id === value))
+            dispatch(setUser({...res.items?.find(f => f.login.toLowerCase() === value.toLowerCase() || f.id === value)}))
         }).catch((e) => {
             toast.error('Ошибка поиска')
         })
     }
-    console.log(userData)
+
     const handleChange = (event, newValue) => {
         setTab(newValue);
     };
@@ -44,8 +49,8 @@ const Admin = () => {
                     </div> :
                     <div className={s.content}>
                         {tab === 0 && (isLoadingUser ? <Skeleton variant="rectangular" width={'100%'} height={300}/> :
-                            <Info userData={userData} isLoadingUser={isLoadingUser}/>)}
-                        {tab === 1 && <History/>}
+                            <Info userData={user} isLoadingUser={isLoadingUser}/>)}
+                        {tab === 1 && <History userData={user}/>}
                     </div>
                 }
             </Container>
