@@ -5,13 +5,19 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 import classNames from "classnames";
 import {AgGridReact} from "ag-grid-react";
 import {useGetTableQuery} from "../../../store/manager.service";
-import {Pagination, Skeleton} from "@mui/material";
+import {Button, FormControl, InputLabel, MenuItem, Pagination, Select, Skeleton} from "@mui/material";
 import {converterDate} from "../../../utils/converterDate";
 import {getNumberWithSpaces} from "../../../utils/getNumberSpace";
 import {toast} from "react-toastify";
+import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
+import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 
 const History = ({userData}) => {
     const gridRef = useRef()
+    const [values, setValues] = useState({
+        from: null,
+        to: null
+    })
     const {data: table_data, isLoading: isLoadingTable} = useGetTableQuery({login: userData?.login}, {
         refetchOnReconnect: true,
         refetchOnMountOrArgChange: true,
@@ -122,6 +128,60 @@ const History = ({userData}) => {
 
     return (
         <div style={{width: '100%'}}>
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+                <div className={s.actions}>
+                    <FormControl>
+                        <InputLabel id="demo-simple-select-label">Счет</InputLabel>
+                    <Select
+                        value={null}
+                        label="Счет"
+                        onChange={() => {
+                        }}
+                    >
+                        <MenuItem value={10}>Ten</MenuItem>
+                        <MenuItem value={20}>Twenty</MenuItem>
+                        <MenuItem value={30}>Thirty</MenuItem>
+                    </Select>
+                    </FormControl>
+                    <FormControl>
+                        <InputLabel id="demo-simple-select-label">Статья</InputLabel>
+                    <Select
+                        value={null}
+                        label="Статья"
+                        onChange={() => {
+                        }}
+                    >
+                        <MenuItem value={10}>Ten</MenuItem>
+                        <MenuItem value={20}>Twenty</MenuItem>
+                        <MenuItem value={30}>Thirty</MenuItem>
+                    </Select>
+                    </FormControl>
+                    <FormControl>
+                        <InputLabel id="demo-simple-select-label">Направление</InputLabel>
+                        <Select
+                            value={null}
+                            label="Направление"
+                            onChange={() => {
+                            }}
+                        >
+                            <MenuItem value={10}>Ten</MenuItem>
+                            <MenuItem value={20}>Twenty</MenuItem>
+                            <MenuItem value={30}>Thirty</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <DatePicker
+                        label="Дата от"
+                        value={values.from}
+                        onChange={(newValue) => setValues({...values, from: newValue})}
+                    />
+                    <DatePicker
+                        label="Дата до"
+                        value={values.to}
+                        onChange={(newValue) => setValues({...values, to: newValue})}
+                    />
+                    <Button variant="outlined">Поиск</Button>
+                </div>
+            </LocalizationProvider>
             <div className={classNames(s.table, 'ag-theme-alpine')} style={{width: '100%', height: 600}}>
                 <AgGridReact
                     ref={gridRef}
@@ -162,7 +222,6 @@ const History = ({userData}) => {
                     }}/>
                 </div>
             </div>
-
         </div>
     );
 };
