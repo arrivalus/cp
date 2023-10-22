@@ -44,7 +44,7 @@ export const managerApi = createApi({
         getTable: build.query({
             query(payload) {
                 return {
-                    url: `api/Manage/transfer-list?filterKey=${payload.login}`,
+                    url: `api/Manage/transfer-list?filterKey=${payload.login}&pageSize=0`,
                     method: 'get',
                 }
             },

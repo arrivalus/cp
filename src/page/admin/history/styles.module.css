@@ -1,5 +1,21 @@
 .test {
-    /*height: 50px;*/
     line-height: 150%;
     margin: 10px 0;
+}
+
+.table {
+    position: relative;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: calc(100% - 6px);
+    /*padding: 20px 0 0 0;*/
+    position: absolute;
+    bottom: 8px;
+    z-index: 210;
+    background: #fff;
+    right: 5px;
 }
