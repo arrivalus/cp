@@ -108,7 +108,7 @@ const HistoryAll = ({userData}) => {
     ];
 
     const sum_filter = data?.items.filter((f) => f.sum !== null)
-    const sum = sum_filter.reduce((acc, inc) => acc = acc + inc?.sum, 0)
+    const sum = sum_filter?.reduce((acc, inc) => acc = acc + inc?.sum, 0)
     console.log(sum)
     return (
         <div style={{width: '100%'}}>
