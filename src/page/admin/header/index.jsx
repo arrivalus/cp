@@ -23,7 +23,7 @@ const Header = ({search, setValue, value}) => {
                     sx={{
                         maxWidth: '300px',
                         width: '100%',
-                    }} label="Поиск по логину или ID"
+                    }} label="Поиск по логину"
                     variant="outlined"/>
 
                 <Button disabled={!value} onClick={search} color={'primary'}
