@@ -4,7 +4,7 @@ import 'ag-grid-community/styles/ag-grid.css'; // Core grid CSS, always needed
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import classNames from "classnames";
 import {AgGridReact} from "ag-grid-react";
-import {useGetTableQuery} from "../../../store/manager.service";
+import {useGetArticlesQuery, useGetTableQuery} from "../../../store/manager.service";
 import {Button, FormControl, InputLabel, MenuItem, Pagination, Select, Skeleton} from "@mui/material";
 import {converterDate} from "../../../utils/converterDate";
 import {getNumberWithSpaces} from "../../../utils/getNumberSpace";
@@ -18,11 +18,15 @@ const History = ({userData}) => {
         from: null,
         to: null
     })
+
     const {data: table_data, isLoading: isLoadingTable} = useGetTableQuery({login: userData?.login}, {
         refetchOnReconnect: true,
         refetchOnMountOrArgChange: true,
         skip: !userData?.id
     })
+
+    const {data: article_data, isLoading: isLoadingArticle} = useGetArticlesQuery()
+    console.log(article_data)
 
     const handleClickCell = async (data) => {
         await navigator.clipboard.writeText(data)
@@ -132,29 +136,27 @@ const History = ({userData}) => {
                 <div className={s.actions}>
                     <FormControl>
                         <InputLabel id="demo-simple-select-label">Счет</InputLabel>
-                    <Select
-                        value={null}
-                        label="Счет"
-                        onChange={() => {
-                        }}
-                    >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
+                        <Select
+                            value={null}
+                            label="Счет"
+                            onChange={() => {
+                            }}
+                        >
+                            <MenuItem value={10}>Ten</MenuItem>
+                            <MenuItem value={20}>Twenty</MenuItem>
+                            <MenuItem value={30}>Thirty</MenuItem>
+                        </Select>
                     </FormControl>
                     <FormControl>
                         <InputLabel id="demo-simple-select-label">Статья</InputLabel>
-                    <Select
-                        value={null}
-                        label="Статья"
-                        onChange={() => {
-                        }}
-                    >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
+                        <Select
+                            value={null}
+                            label="Статья"
+                            onChange={() => {
+                            }}
+                        >
+                            {article_data.map((el) => <MenuItem value={el}>{el}</MenuItem>)}
+                        </Select>
                     </FormControl>
                     <FormControl>
                         <InputLabel id="demo-simple-select-label">Направление</InputLabel>

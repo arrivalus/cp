@@ -5,7 +5,7 @@ import Header from "./header";
 import {Skeleton, Tab, Tabs, Typography} from "@mui/material";
 import Info from "./info";
 import History from "./history";
-import {useGetUserMutation} from "../../store/manager.service";
+import {useGetArticlesQuery, useGetUserMutation} from "../../store/manager.service";
 import {toast} from "react-toastify";
 import {useDispatch, useSelector} from "react-redux";
 import {selectUser, setUser} from "../../store/slice/userSlice";

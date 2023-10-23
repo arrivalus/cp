@@ -49,6 +49,14 @@ export const managerApi = createApi({
                 }
             },
         }),
+        getArticles: build.query({
+            query() {
+                return {
+                    url: `api/Finance/payment-articles`,
+                    method: 'get',
+                }
+            },
+        }),
     })
 })
 
@@ -58,4 +66,5 @@ export const {
     useDeleteDocumentsMutation,
     useGetDocumentsQuery,
     useGetTableQuery,
+    useGetArticlesQuery,
 } = managerApi;
