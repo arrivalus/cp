@@ -11,22 +11,30 @@ import {getNumberWithSpaces} from "../../../utils/getNumberSpace";
 import {toast} from "react-toastify";
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
+import moment from "moment";
 
-const History = ({userData}) => {
+const History = ({userData, value}) => {
     const gridRef = useRef()
     const [values, setValues] = useState({
-        from: null,
-        to: null
+        from: moment().subtract(6, 'months'),
+        to: moment(),
+        Article: '',
+        AccountName: 'all',
+        TransferDirection: 'all',
     })
 
-    const {data: table_data, isLoading: isLoadingTable} = useGetTableQuery({login: userData?.login}, {
+    const {data: table_data, isLoading: isLoadingTable, isFetching} = useGetTableQuery({
+        login: userData?.login,
+        Article: values.Article,
+        CreationDate: `${moment(values.from).valueOf()}-${moment(values.to).valueOf()}`,
+        AccountName: values.AccountName === 'all' ? '' : values.AccountName,
+        TransferDirection: values.TransferDirection === 'all' ? '' : values.TransferDirection,
+    }, {
         refetchOnReconnect: true,
         refetchOnMountOrArgChange: true,
         skip: !userData?.id
     })
-
     const {data: article_data, isLoading: isLoadingArticle} = useGetArticlesQuery()
-    console.log(article_data)
 
     const handleClickCell = async (data) => {
         await navigator.clipboard.writeText(data)
@@ -124,12 +132,6 @@ const History = ({userData}) => {
         },
     ];
 
-    if (isLoadingTable || table_data === undefined) {
-        return <Skeleton variant="rectangular" width={'100%'} height={500}/>
-    }
-
-    console.log(Math.ceil(table_data?.totalCount / 20))
-
     return (
         <div style={{width: '100%'}}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -137,38 +139,42 @@ const History = ({userData}) => {
                     <FormControl>
                         <InputLabel id="demo-simple-select-label">Счет</InputLabel>
                         <Select
-                            value={null}
+                            value={values.AccountName}
                             label="Счет"
-                            onChange={() => {
+                            onChange={(e) => {
+                                setValues({...values, AccountName: e.target.value})
                             }}
                         >
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            <MenuItem value={'all'}>Все</MenuItem>
+                            <MenuItem value={'Inner'}>USDT</MenuItem>
+                            <MenuItem value={'Business'}>Business</MenuItem>
                         </Select>
                     </FormControl>
                     <FormControl>
                         <InputLabel id="demo-simple-select-label">Статья</InputLabel>
                         <Select
-                            value={null}
+                            disabled={isLoadingArticle}
+                            value={values.Article}
                             label="Статья"
-                            onChange={() => {
+                            onChange={(e) => {
+                                setValues({...values, Article: e.target.value})
                             }}
                         >
-                            {article_data.map((el) => <MenuItem value={el}>{el}</MenuItem>)}
+                            {article_data?.map((el) => <MenuItem value={el}>{el}</MenuItem>)}
                         </Select>
                     </FormControl>
                     <FormControl>
                         <InputLabel id="demo-simple-select-label">Направление</InputLabel>
                         <Select
-                            value={null}
+                            value={values.TransferDirection}
                             label="Направление"
-                            onChange={() => {
+                            onChange={(e) => {
+                                setValues({...values, TransferDirection: e.target.value})
                             }}
                         >
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            <MenuItem value={'all'}>Все</MenuItem>
+                            <MenuItem value={0}>Приход</MenuItem>
+                            <MenuItem value={1}>Расход</MenuItem>
                         </Select>
                     </FormControl>
                     <DatePicker
@@ -181,49 +187,53 @@ const History = ({userData}) => {
                         value={values.to}
                         onChange={(newValue) => setValues({...values, to: newValue})}
                     />
-                    <Button variant="outlined">Поиск</Button>
+
+                    <Button variant="outlined" disabled={true}
+                            sx={{color: 'rgba(0, 0, 0, 0.8) !important'}}>{`Найдено ${isFetching ? '---' : (table_data?.totalCount || 0)} операций`}</Button>
                 </div>
             </LocalizationProvider>
-            <div className={classNames(s.table, 'ag-theme-alpine')} style={{width: '100%', height: 600}}>
-                <AgGridReact
-                    ref={gridRef}
-                    enableBrowserTooltips={true}
-                    tooltipShowDelay={0}
-                    tooltipHideDelay={0}
-                    getRowStyle={(params) => {
-                        if (params.data.creditSum) {
-                            return {background: 'rgba(232,68,68,0.3)'};
-                        }
-                    }}
-                    localeText={{
-                        "to": '-',
-                        "of": 'из',
-                        "page": 'страница',
-                    }}
-                    paginationPageSize={20}
-                    // viewportRowModelPageSize={20}
-                    pagination={true}
-                    columnDefs={columnDefs}
-                    // rowHeight={120}
-                    rowData={table_data?.items || []}
-                    style={{height: '100%', width: '100%'}}
-                    defaultColDef={{
-                        editable: true,
-                        sortable: true,
-                        flex: 1,
-                        minWidth: 20,
-                        filter: false,
-                        floatingFilter: false,
-                        resizable: true,
-                        menuTabs: false,
-                    }}
-                />
-                <div className={s.pagination}>
-                    <Pagination count={Math.ceil(table_data?.totalCount / 20)} color="primary" onChange={(e, v) => {
-                        gridRef?.current?.api?.paginationGoToPage(Number(v - 1))
-                    }}/>
-                </div>
-            </div>
+            {isFetching ? <Skeleton variant="rectangular" width={'100%'} height={600}/> :
+                <div className={classNames(s.table, 'ag-theme-alpine')} style={{width: '100%', height: 600}}>
+                    <AgGridReact
+                        ref={gridRef}
+                        enableBrowserTooltips={true}
+                        tooltipShowDelay={0}
+                        tooltipHideDelay={0}
+                        getRowStyle={(params) => {
+                            if (params.data.creditSum) {
+                                return {background: 'rgba(232,68,68,0.3)'};
+                            }
+                        }}
+                        localeText={{
+                            "to": '-',
+                            "of": 'из',
+                            "page": 'страница',
+                            "Rows": "Нет данных"
+                        }}
+                        paginationPageSize={20}
+                        // viewportRowModelPageSize={20}
+                        pagination={true}
+                        columnDefs={columnDefs}
+                        // rowHeight={120}
+                        rowData={table_data?.items || []}
+                        style={{height: '100%', width: '100%'}}
+                        defaultColDef={{
+                            editable: true,
+                            sortable: true,
+                            flex: 1,
+                            minWidth: 20,
+                            filter: false,
+                            floatingFilter: false,
+                            resizable: true,
+                            menuTabs: false,
+                        }}
+                    />
+                    <div className={s.pagination}>
+                        <Pagination count={Math.ceil(table_data?.totalCount / 20)} color="primary" onChange={(e, v) => {
+                            gridRef?.current?.api?.paginationGoToPage(Number(v - 1))
+                        }}/>
+                    </div>
+                </div>}
         </div>
     );
 };

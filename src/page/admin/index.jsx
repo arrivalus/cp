@@ -9,6 +9,7 @@ import {useGetArticlesQuery, useGetUserMutation} from "../../store/manager.servi
 import {toast} from "react-toastify";
 import {useDispatch, useSelector} from "react-redux";
 import {selectUser, setUser} from "../../store/slice/userSlice";
+import HistoryAll from "./history_all";
 
 const Admin = () => {
     const dispatch = useDispatch()
@@ -40,17 +41,19 @@ const Admin = () => {
                     <Tabs value={tab} onChange={handleChange} aria-label="basic tabs example">
                         <Tab label="Информация о пользователе"/>
                         <Tab label="История операций"/>
+                        <Tab label="Портфели"/>
                     </Tabs>
                 </div>
 
-                {(!value || !startSerach) ? <div className={s.content}>
+                {((!value || !startSerach)) ? <div className={s.content}>
                         <Typography variant={'h4'} sx={{textAlign: 'center'}} color={'rgba(0,0,0,0.5)'}>Введите логин или id
                             пользователя <br/> и нажмите поиск</Typography>
                     </div> :
                     <div className={s.content}>
                         {tab === 0 && (isLoadingUser ? <Skeleton variant="rectangular" width={'100%'} height={300}/> :
                             <Info userData={user} isLoadingUser={isLoadingUser}/>)}
-                        {tab === 1 && <History userData={user}/>}
+                        {tab === 1 && <History value={value} userData={user}/>}
+                        {tab === 2 && <HistoryAll userData={user}/>}
                     </div>
                 }
             </Container>

@@ -44,7 +44,7 @@ export const managerApi = createApi({
         getTable: build.query({
             query(payload) {
                 return {
-                    url: `api/Manage/transfer-list?filterKey=${payload.login}&pageSize=0`,
+                    url: `api/Manage/transfer-list?filterKey=${payload.login}&pageSize=0&Article=${payload.Article}&CreationDate=${payload.CreationDate}&AccountName=${payload.AccountName}&TransferDirection=${payload.TransferDirection}`,
                     method: 'get',
                 }
             },
@@ -53,6 +53,14 @@ export const managerApi = createApi({
             query() {
                 return {
                     url: `api/Finance/payment-articles`,
+                    method: 'get',
+                }
+            },
+        }),
+        getAllFinance: build.query({
+            query(payload) {
+                return {
+                    url: `api/Manage/investments?partnerId=${payload.partnerId}&pageSize=0&status=${payload.status}&programCode=${payload.programCode}`,
                     method: 'get',
                 }
             },
@@ -67,4 +75,5 @@ export const {
     useGetDocumentsQuery,
     useGetTableQuery,
     useGetArticlesQuery,
+    useGetAllFinanceQuery,
 } = managerApi;
