@@ -46,7 +46,7 @@ const Admin = () => {
                 </div>
 
                 {((!value || !startSerach)) ? <div className={s.content}>
-                        <Typography variant={'h4'} sx={{textAlign: 'center'}} color={'rgba(0,0,0,0.5)'}>Введите логин или id
+                        <Typography variant={'h4'} sx={{textAlign: 'center'}} color={'rgba(0,0,0,0.5)'}>Введите логин
                             пользователя <br/> и нажмите поиск</Typography>
                     </div> :
                     <div className={s.content}>

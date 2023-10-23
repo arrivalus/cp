@@ -91,7 +91,7 @@ const HistoryAll = ({userData}) => {
             sortable: false,
             editable: false,
             onCellClicked: (props) => handleClickCell(props.value),
-            cellRenderer: (props) => props.value ? converterDate(props.value) : '---'
+            cellRenderer: (props) => props.value ?`до ${converterDate(props.value)}` : '---'
         },
         {
             field: 'speedPercent',

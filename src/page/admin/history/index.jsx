@@ -16,7 +16,7 @@ import moment from "moment";
 const History = ({userData, value}) => {
     const gridRef = useRef()
     const [values, setValues] = useState({
-        from: moment().subtract(6, 'months'),
+        from: moment('01/01/2019'),
         to: moment(),
         Article: '',
         AccountName: 'all',
@@ -178,11 +178,13 @@ const History = ({userData, value}) => {
                         </Select>
                     </FormControl>
                     <DatePicker
+                        format={'MM.DD.YYYY'}
                         label="Дата от"
                         value={values.from}
                         onChange={(newValue) => setValues({...values, from: newValue})}
                     />
                     <DatePicker
+                        format={'MM.DD.YYYY'}
                         label="Дата до"
                         value={values.to}
                         onChange={(newValue) => setValues({...values, to: newValue})}
