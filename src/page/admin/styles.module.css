@@ -9,7 +9,7 @@
     border-radius: 20px;
 }
 
-.content{
+.content {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -17,4 +17,18 @@
     margin-top: 30px;
     background: #fff;
     border-radius: 20px;
+}
+
+@media screen and (max-width: 1200px) {
+    .tabs div{
+        overflow: auto;
+    }
+
+    .tabs{
+        padding: 15px 15px;
+    }
+
+    .content{
+        padding: 15px 15px;
+    }
 }

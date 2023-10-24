@@ -83,7 +83,7 @@ const Info = ({userData, isLoadingUser}) => {
                         marginBottom: '10px',
                         marginTop: '20px'
                     }}>Общая информация</Typography>
-                    <FormControl>
+                    <FormControl className={s.form}>
                         <FormLabel
                             sx={{
                                 color: 'rgba(0, 0, 0, 0.6) !important'
@@ -304,6 +304,7 @@ const Info = ({userData, isLoadingUser}) => {
                 <div className={s.documents}>
                     {data?.map((el, ind) => <Avatar onClick={() => setCurrentImg(el)}
                                                     sx={{
+                                                        boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
                                                         width: '100%',
                                                         height: '200px',
                                                         borderRadius: '0',

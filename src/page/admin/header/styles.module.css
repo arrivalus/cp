@@ -3,6 +3,13 @@
     border-radius: 20px;
     padding: 30px;
     display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.header_top {
+    width: 100%;
+    display: flex;
     align-items: center;
     justify-content: space-between;
 }
@@ -11,6 +18,29 @@
 .header_left {
     display: flex;
     align-items: center;
-    max-width: 500px;
+    max-width: 800px;
     width: 100%;
+}
+
+.info {
+    display: flex;
+    align-items: flex-end;
+    margin-top: 20px;
+}
+
+@media screen and (max-width: 1200px) {
+    .header {
+        padding: 15px 15px;
+    }
+
+    .header_top {
+        flex-direction: column;
+    }
+
+    .logout {
+        max-width: 100%;
+        width: 100%;
+        margin-left: 0 !important;
+        margin-top: 15px;
+    }
 }

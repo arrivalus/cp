@@ -7,12 +7,14 @@ import {AgGridReact} from "ag-grid-react";
 import {converterDate} from "../../../utils/converterDate";
 import {getNumberWithSpaces} from "../../../utils/getNumberSpace";
 import {toast} from "react-toastify";
+import AnnouncementIcon from '@mui/icons-material/Announcement';
 
 const HistoryAll = ({userData}) => {
     const gridRef = useRef()
     const [values, setValues] = useState({
         status: '',
-        programCode: ''
+        programCode: '',
+        promo: 'all'
     })
     const {data, isLoading, isFetching} = useGetAllFinanceQuery({
         partnerId: userData?.id,
@@ -94,6 +96,18 @@ const HistoryAll = ({userData}) => {
             cellRenderer: (props) => props.value ?`до ${converterDate(props.value)}` : '---'
         },
         {
+            field: 'monthPercent',
+            minWidth: 95,
+            headerName: 'Процент',
+            tooltipValueGetter: (props) => {
+                return props?.data?.monthPercent === null ? '' : `до ${converterDate(props?.data?.monthPercent)}`
+            },
+            sortable: false,
+            editable: false,
+            onCellClicked: (props) => handleClickCell(props.value),
+            cellRenderer: (props) => props.value !== 0 ? `${(props.value * 100) + (props.data.speedPercent * 100)}%` : '---'
+        },
+        {
             field: 'speedPercent',
             minWidth: 135,
             headerName: 'Автоматизация',
@@ -107,12 +121,28 @@ const HistoryAll = ({userData}) => {
         },
     ];
 
-    const sum_filter = data?.items.filter((f) => f.sum !== null)
+    const filtered_data = (values.promo === 'all' && data?.items) || (values.promo === 'Промо' && data?.items?.filter((f) => f.isPromo) || (values.promo === 'Живые' && data?.items?.filter((f) => !f.isPromo))) || data?.items
+
+    const sum_filter = filtered_data?.filter((f) => f?.sum !== null)
     const sum = sum_filter?.reduce((acc, inc) => acc = acc + inc?.sum, 0)
-    console.log(sum)
     return (
-        <div style={{width: '100%'}}>
+        <div style={{width: '100%',paddingBottom:'20px'}}>
             <div className={s.actions}>
+                <FormControl>
+                    <InputLabel id="demo-simple-select-label">Портфели</InputLabel>
+                    <Select
+                        value={values.promo}
+                        label="Портфели"
+                        onChange={(e) => {
+                            setValues({...values, promo: e.target.value})
+                        }}
+                    >
+                        <MenuItem value={'all'}>Все</MenuItem>
+                        <MenuItem value={'Промо'}>Промо</MenuItem>
+                        <MenuItem value={'Живые'}>Живые</MenuItem>
+                    </Select>
+                </FormControl>
+
                 <FormControl>
                     <InputLabel id="demo-simple-select-label">Статус</InputLabel>
                     <Select
@@ -143,12 +173,14 @@ const HistoryAll = ({userData}) => {
                         <MenuItem value={'agressive'}>Агрессивный</MenuItem>
                     </Select>
                 </FormControl>
+                <div className={s.empty}/>
+                <div className={s.empty}/>
                 <Button variant="outlined" disabled={true}
-                        sx={{color: 'rgba(0, 0, 0, 0.8) !important'}}>
-                    <p>{`Найдено ${isFetching ? '---' : (data?.totalCount || 0)} портфелей на сумму ${isFetching ? '---' : getNumberWithSpaces(sum?.toFixed(2))}$`}</p>
+                        sx={{color: 'rgba(0, 0, 0, 0.8) !important', height: '55px'}}>
+                    <p>{`Найдено ${isFetching ? '---' : (filtered_data?.length || 0)} портфелей на сумму ${isFetching ? '---' : getNumberWithSpaces(sum?.toFixed(2))}$`}</p>
                 </Button>
-
             </div>
+
             {isFetching ? <Skeleton variant="rectangular" width={'100%'} height={600}/> :
                 <div className={classNames(s.table, 'ag-theme-alpine')} style={{width: '100%', height: 600}}>
                     <AgGridReact
@@ -174,7 +206,7 @@ const HistoryAll = ({userData}) => {
                         pagination={true}
                         columnDefs={columnDefs}
                         // rowHeight={120}
-                        rowData={data?.items || []}
+                        rowData={filtered_data || []}
                         style={{height: '100%', width: '100%'}}
                         defaultColDef={{
                             editable: true,

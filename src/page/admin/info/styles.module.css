@@ -29,8 +29,31 @@
     grid-row-gap: 20px;
 }
 
-.verf_box{
+.verf_box {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+@media screen and (max-width: 1200px) {
+    .verf_box {
+        display: flex;
+        align-items: flex-start;
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .verf_box h4 {
+        font-size: 18px;
+        margin-top: 10px !important;
+    }
+
+    .content {
+        grid-template-columns: 1fr;
+    }
+
+    .documents{
+        grid-template-columns: 1fr;
+        padding-bottom: 20px;
+    }
 }

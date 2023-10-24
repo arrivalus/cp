@@ -12,6 +12,7 @@ import {toast} from "react-toastify";
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
+import AnnouncementIcon from '@mui/icons-material/Announcement';
 
 const History = ({userData, value}) => {
     const gridRef = useRef()
@@ -24,7 +25,7 @@ const History = ({userData, value}) => {
     })
 
     const {data: table_data, isLoading: isLoadingTable, isFetching} = useGetTableQuery({
-        login: userData?.login,
+        partnerId: userData?.id,
         Article: values.Article,
         CreationDate: `${moment(values.from).valueOf()}-${moment(values.to).valueOf()}`,
         AccountName: values.AccountName === 'all' ? '' : values.AccountName,
@@ -94,7 +95,10 @@ const History = ({userData, value}) => {
             editable: false,
             onCellClicked: (props) => handleClickCell(props.value),
             cellRenderer: (props) => {
-                return <p className={s.test}>{props.valueFormatted ? props.valueFormatted : props.value}</p>
+                return <p
+                    className={s.test}>{props.valueFormatted ? props.valueFormatted : props.value} {props.data.comment !== null &&
+                    <p
+                        className={s.icon}><AnnouncementIcon/></p>}</p>
             }
         },
         {
@@ -133,7 +137,7 @@ const History = ({userData, value}) => {
     ];
 
     return (
-        <div style={{width: '100%'}}>
+        <div style={{width: '100%',paddingBottom:'20px'}}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <div className={s.actions}>
                     <FormControl>
@@ -160,7 +164,8 @@ const History = ({userData, value}) => {
                                 setValues({...values, Article: e.target.value})
                             }}
                         >
-                            {article_data?.map((el) => <MenuItem value={el}>{el}</MenuItem>)}
+                            {article_data?.filter((f) => f !== 'Перевод между счетами' && f !== 'Бинарное вознаграждение' && f !== 'Оплата места в ленте' && f !== 'Оплата за участие в конкурсе')?.map((el) =>
+                                <MenuItem value={el} key={el}>{el}</MenuItem>)}
                         </Select>
                     </FormControl>
                     <FormControl>
@@ -173,8 +178,8 @@ const History = ({userData, value}) => {
                             }}
                         >
                             <MenuItem value={'all'}>Все</MenuItem>
-                            <MenuItem value={0}>Приход</MenuItem>
-                            <MenuItem value={1}>Расход</MenuItem>
+                            <MenuItem value={0}>Поступления</MenuItem>
+                            <MenuItem value={1}>Списания</MenuItem>
                         </Select>
                     </FormControl>
                     <DatePicker
@@ -191,7 +196,10 @@ const History = ({userData, value}) => {
                     />
 
                     <Button variant="outlined" disabled={true}
-                            sx={{color: 'rgba(0, 0, 0, 0.8) !important'}}>{`Найдено ${isFetching ? '---' : (table_data?.totalCount || 0)} операций`}</Button>
+                            sx={{
+                                height: '56px',
+                                color: 'rgba(0, 0, 0, 0.8) !important'
+                            }}>{`Найдено ${isFetching ? '---' : (table_data?.totalCount || 0)} операций`}</Button>
                 </div>
             </LocalizationProvider>
             {isFetching ? <Skeleton variant="rectangular" width={'100%'} height={600}/> :

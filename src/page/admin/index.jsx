@@ -10,6 +10,7 @@ import {toast} from "react-toastify";
 import {useDispatch, useSelector} from "react-redux";
 import {selectUser, setUser} from "../../store/slice/userSlice";
 import HistoryAll from "./history_all";
+import Reqisites from "./requsites";
 
 const Admin = () => {
     const dispatch = useDispatch()
@@ -35,13 +36,14 @@ const Admin = () => {
     return (
         <div className={s.main}>
             <Container>
-                <Header setValue={setValue} search={handleFindUser} value={value}/>
+                <Header user={user} setValue={setValue} search={handleFindUser} value={value}/>
 
                 <div className={s.tabs}>
                     <Tabs value={tab} onChange={handleChange} aria-label="basic tabs example">
                         <Tab label="Информация о пользователе"/>
                         <Tab label="История операций"/>
                         <Tab label="Портфели"/>
+                        <Tab label="Реквизиты"/>
                     </Tabs>
                 </div>
 
@@ -54,6 +56,7 @@ const Admin = () => {
                             <Info userData={user} isLoadingUser={isLoadingUser}/>)}
                         {tab === 1 && <History value={value} userData={user}/>}
                         {tab === 2 && <HistoryAll userData={user}/>}
+                        {tab === 3 && <Reqisites userData={user}/>}
                     </div>
                 }
             </Container>
