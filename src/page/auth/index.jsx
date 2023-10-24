@@ -47,7 +47,7 @@ const Auth = () => {
                     const key = Object.keys(decoded).find((elem) => elem.includes("role"));
                     const role = decoded[key]
 
-                    if (role === 'Manager') {
+                    if (role === 'Manager' || role === 'Accountant') {
                         dispatch(setAuth({
                             token: res.data.access_token,
                             refresh_token: res.data.refresh_token
