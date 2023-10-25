@@ -5,7 +5,17 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 import classNames from "classnames";
 import {AgGridReact} from "ag-grid-react";
 import {useGetArticlesQuery, useGetTableQuery} from "../../../store/manager.service";
-import {Button, FormControl, InputLabel, MenuItem, Pagination, Select, Skeleton} from "@mui/material";
+import {
+    Button, Dialog,
+    DialogActions,
+    DialogTitle,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Pagination,
+    Select,
+    Skeleton
+} from "@mui/material";
 import {converterDate} from "../../../utils/converterDate";
 import {getNumberWithSpaces} from "../../../utils/getNumberSpace";
 import {toast} from "react-toastify";
@@ -16,6 +26,8 @@ import AnnouncementIcon from '@mui/icons-material/Announcement';
 
 const History = ({userData, value}) => {
     const gridRef = useRef()
+
+    const [comment, setComment] = useState(null)
     const [values, setValues] = useState({
         from: moment('01/01/2019'),
         to: moment(),
@@ -93,12 +105,18 @@ const History = ({userData, value}) => {
             autoHeight: true,
             sortable: false,
             editable: false,
-            onCellClicked: (props) => handleClickCell(props.value),
+            // onCellClicked: (props) => handleClickCell(props.value),
             cellRenderer: (props) => {
-                return <p
-                    className={s.test}>{props.valueFormatted ? props.valueFormatted : props.value} {props.data.comment !== null &&
+                console.log(props)
+                return <p onClick={() => handleClickCell(props.value)}
+                          className={s.test}>{props.valueFormatted ? props.valueFormatted : props.value} {props.data.comment !== null &&
                     <p
-                        className={s.icon}><AnnouncementIcon/></p>}</p>
+                        className={s.icon} onClick={(e) => {
+                        e.stopPropagation()
+                        e.preventDefault()
+                        setComment(props.data?.comment)
+                    }
+                    }><AnnouncementIcon/></p>}</p>
             }
         },
         {
@@ -137,7 +155,31 @@ const History = ({userData, value}) => {
     ];
 
     return (
-        <div style={{width: '100%',paddingBottom:'20px'}}>
+        <div style={{width: '100%', paddingBottom: '20px'}}>
+            <Dialog
+                fullWidth={true}
+                open={comment !== null}
+                onClose={() => setComment(null)}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {comment}
+                </DialogTitle>
+                {/*<DialogContent>*/}
+                {/*    <DialogContentText id="alert-dialog-description">*/}
+                {/*        Let Google help apps determine location. This means sending anonymous*/}
+                {/*        location data to Google, even when no apps are running.*/}
+                {/*    </DialogContentText>*/}
+                {/*</DialogContent>*/}
+                <DialogActions>
+                    {/*<Button onClick={handleClose}>Disagree</Button>*/}
+                    <Button onClick={() => setComment(null)} autoFocus>
+                        Закрыть
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <div className={s.actions}>
                     <FormControl>
